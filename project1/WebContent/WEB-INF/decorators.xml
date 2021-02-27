@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="euc-kr" ?>
+<!--  /WEB-INF/decorators.xml -->
+<decorators defaultdir="/layout">
+	
+	<decorator name="layout" page="layout.jsp">
+		<pattern>/*</pattern><!-- 관리자용으로 따로 레이아웃을 만들어 적용할 수도 있다. -->
+	</decorator>
+	<excludes> <!-- 3) excludes : sitemesh의 layout 설정에서 제외시킬 '패턴' 설정-->
+		<pattern>/culture/member/id*</pattern> <!--  id로 시작하는 모든 놈들은 레이아웃 쓰지마 -->
+		<pattern>/culture/member/pw*</pattern>
+		<pattern>/member/picture*</pattern>
+		<pattern>/member/password*</pattern>
+		<pattern>/board/imgupload*</pattern>
+		<pattern>/culture/member/memlist*</pattern>
+	</excludes> 
+</decorators>

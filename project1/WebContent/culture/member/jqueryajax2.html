@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!-- 20201218/jqueryajax2.html 
+
+==로그인 버튼 클릭시
+1. submit 버튼이 클릭된 경우 id,pass 두개의 값을 ajax2-1.jsp로 전송하기
+2. ajax2-1.jsp 페이지에서 member 테이블을 읽어 id, pass 검증. jstl이용하기
+	id,pass 일치 : 반갑습니다. name님 => message부분에 출력
+	id,pass 불일치 : 아이디 또는 비밀번호가 틀립니다. => message부분에 출력
+
+===아이디 중복 버튼 클릭시===
+1. id 파라미터를 ajax2-2.jsp로 전송
+	id가 존재 : 존재하는 아이디 입니다. => message부분에 출력
+			id 입력란을 지우기(jquery 이용)
+	id가 존재하지 않으면 : 회원가입을 할 수 있는 아이디 입니다. => message부분에 출력.
+
+
+
+-->
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>ajax을 이용한 로그인</title>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+</script>
+<script>
+/* 
+ 1)시작은 무조건 $(function(){이 안에다가 })
+ 2)submit이라는 버튼이 클릭이 되면.{
+    3)param을 설정하고
+    4)$.ajax(
+    		{url:보낼페이지, 
+    		 type:전송방식, 
+    		 data:파람, 
+    		 success: function(옆에있는data -페이지에 파람 보내주고 받은 그 페이지 내용.-){어떻게 써먹을건가},
+    		 error: function(오류객체e){어찌할텐가}}
+    		)
+    5)return false;  - 기본이벤트 없앰. 
+   }
+*/
+	$(function(){
+		$("#submit").click(function(){
+			                               // ↓ json의 형태로 접근한것.
+			var param = {id:$("#id").val() , pass:$("#pass").val()}
+			$.ajax({
+				url:"ajax2-1.jsp",
+				type:"POST",
+				data : param, // ajax에서는 객체로 전송가능.
+				success : function(data){
+					$("#message").html(data);
+				},
+				error:function(e){
+					alert("서버오류:"+e.status);
+				}
+			})
+			return false; // 기본이벤트 취소. submit버튼의 기능 제거. ("원래 submit하려던거 하지마.")
+			              // submit버튼의 기능 : form의 action으로 페이지 이동.
+		})
+		
+		$("#btn").click(function(){
+			//var param = {id:$("#id").val()}
+			var param = "id="+$("#id").val()
+			$.ajax({
+				url:"ajax2-2.jsp",
+				type:"POST",
+				data:param,
+				success : function(data){
+					$("#message").html(data);
+					if($("h1").is(".find")){  // 클래스 속성이 find이면.(is함수--클래스속성 확인)
+						$("#id").val(""); // input에있는 텍스트 지우기.
+					}
+				},
+				error:function(e){
+					alert("서버오류:"+e.status);
+				}
+			})
+		})
+	})
+
+
+</script>
+</head>
+<body>
+
+<form name="f"><!-- 액션이 없다.. jquery로 동작을 설정하기 때문.-->
+		아이디 <input type="text" id="id"> <input type="button" value="아이디중복" id="btn">
+	<br>비밀번호 <input type="password" id="pass">
+	<br><input type="submit" value="로그인" id="submit">
+	<!--  ↑ submit의 기본기능 : form의 데이터를 가지고 action을 취함.(기본이벤트)
+	     	 근데 이것을 무력화 시킬 필요가 있다. return false; ★
+	     	form에 action이 없으면 자기 페이지를 계속 호출하는게 기본이다. 
+	-->
+</form>
+
+<div id="message"></div>
+
+</body>
+</html>
